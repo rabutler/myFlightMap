@@ -2,6 +2,9 @@ library(dplyr)
 library(maps)
 library(ggplot2)
 library(grid)
+source('code/edgeMaker.R')
+
+mapExt <<- data.frame('x' = c(-125,-100), 'y' = c(30,50))
 
 # get the data and combine it
 getFlightData <- function(xx = 'data/TestFlights.csv')
@@ -43,6 +46,14 @@ ggMap <- function()
   fd2 <- fd2 %>% group_by(Departure, Arrival, D.Lat, D.Lon, A.Lat, A.Lon) %>%
     summarise(count = sum(count))
   
+  # compute paths using edgeMaker
+  
+  ## TO DO:
+  ## change to compute fPath on unique flights only
+  
+  fPath <- do.call(rbind, lapply(lapply(1:nrow(fd), function(i){edgeMaker(fd[i,],mapExt)}), 
+                                 function(X) X))
+  
   # plot USA w/ arrival cities as red points
   # can use size or color to depict the number of flights flown between two cities
   # this can be shown by commenting out/in the color and size lines under geom_segment
@@ -55,7 +66,8 @@ ggMap <- function()
     #                            size = count), color = 'blue', 
                 arrow = grid::arrow(length = unit(.5, 'cm'))) +
     geom_point(data = fd, aes(x = A.Lon, y = A.Lat), color = 'red',size = 4) +
-    coord_cartesian(xlim = c(-125,-100), ylim = c(30,50))
+    coord_cartesian(xlim = mapExt$x, ylim = mapExt$y) +
+    geom_path(data = fPath, aes(x = x, y = y), color = 'blue')
 
   gg
 }
