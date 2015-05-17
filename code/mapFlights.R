@@ -1,4 +1,6 @@
 library(dplyr)
+library(maps)
+library(ggplot2)
 
 # get the data and combine it
 getFlightData <- function(xx = 'data/TestFlights.csv')
@@ -29,5 +31,13 @@ getFlightData <- function(xx = 'data/TestFlights.csv')
 
 ggMap <- function()
 {
+  fd <- getFlightData()
+  usamap <- map_data("state")
   
+  # plot USA w/ arrival cities as red points
+  gg <- ggplot() + geom_polygon(data = usamap, aes(x = long, y = lat, group = group)) + 
+    geom_path(data = usamap, aes(x = long, y = lat, group = group), color = 'grey50') +
+    geom_point(data = fd, aes(x = A.Lon, y = A.Lat), color = 'red',size = 4)
+
+  gg
 }
