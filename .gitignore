@@ -1,3 +1,7 @@
+# R Studieo files
+*.Rproj
+*.Rproj.user
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
