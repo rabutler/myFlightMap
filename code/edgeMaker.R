@@ -1,12 +1,17 @@
 # originally from https://gist.github.com/dsparks/4331058#file-tapered-intensity-curved_edges-r
 
-edgeMaker <- function(whichRow, len = 100, curved = TRUE)
+# pExt is the overal plot extents
+
+edgeMaker <- function(whichRow, pExt, len = 100, curved = TRUE)
 {
-  fromC <- layoutCoordinates[adjacencyList[whichRow, 1], ]  # Origin
-  toC <- layoutCoordinates[adjacencyList[whichRow, 2], ]  # Terminus
+
+  #fromC <- layoutCoordinates[adjacencyList[whichRow, 1], ]  # Origin
+  #toC <- layoutCoordinates[adjacencyList[whichRow, 2], ]  # Terminus
+  fromC = c(whichRow$D.Lon, whichRow$D.Lat)
+  toC <- c(whichRow$A.Lon, whichRow$A.Lat)
   
   # Add curve:
-  graphCenter <- colMeans(layoutCoordinates)  # Center of the overall graph
+  graphCenter <- colMeans(pExt)  # Center of the overall graph
   bezierMid <- c(fromC[1], toC[2])  # A midpoint, for bended edges
   distance1 <- sum((graphCenter - bezierMid)^2)
   if(distance1 < sum((graphCenter - c(toC[1], fromC[2]))^2)){
@@ -19,6 +24,6 @@ edgeMaker <- function(whichRow, len = 100, curved = TRUE)
                             c(fromC[2], bezierMid[2], toC[2]),  # X & y
                             evaluation = len))  # Bezier path coordinates
   edge$Sequence <- 1:len  # For size and colour weighting in plot
-  edge$Group <- paste(adjacencyList[whichRow, 1:2], collapse = ">")
+  edge$Group <- paste(whichRow$Departure, whichRow$Arrival, sep = '-')
   return(edge)
 }
