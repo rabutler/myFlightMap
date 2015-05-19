@@ -5,3 +5,5 @@ Date,Departure,Arrival,Airline,Purpose
 2/15/2014,LAS,DEN,SW,B
 3/17/2014,DEN,SAN,United,P
 3/19/2014,SAN,DEN,SW,P
+2/15/2014,DEN,LAS,SW,P
+2/15/2014,LAS,DEN,SW,P
