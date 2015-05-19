@@ -38,20 +38,13 @@ ggMap <- function()
   fd <- getFlightData()
   usamap <- ggplot2::map_data("state")
   
-  # for now, only show path of flights departing DEN
-  fd2 <- dplyr::filter(fd, Departure == 'DEN')
-  
   # aggregate to get number of times flying each leg
-  fd2$count <- 1
-  fd2 <- fd2 %>% group_by(Departure, Arrival, D.Lat, D.Lon, A.Lat, A.Lon) %>%
+  fd$count <- 1
+  fd2 <- fd %>% group_by(Departure, Arrival,Purpose, D.Lat, D.Lon, A.Lat, A.Lon) %>%
     summarise(count = sum(count))
   
   # compute paths using edgeMaker
-  
-  ## TO DO:
-  ## change to compute fPath on unique flights only
-  
-  fPath <- do.call(rbind, lapply(lapply(1:nrow(fd), function(i){edgeMaker(fd[i,],mapExt)}), 
+  fPath <- do.call(rbind, lapply(lapply(1:nrow(fd2), function(i){edgeMaker(fd2[i,],mapExt)}), 
                                  function(X) X))
   
   # plot USA w/ arrival cities as red points
